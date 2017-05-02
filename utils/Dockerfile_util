@@ -1,0 +1,13 @@
+FROM golang:1.7
+RUN apt update && apt install -y libtool libltdl-dev
+RUN mkdir -p ${GOPATH}/src/github.com/hyperledger && \
+	cd ${GOPATH}/src/github.com/hyperledger/ && \
+	git clone https://github.com/hyperledger/fabric.git && \
+	cd ${GOPATH}/src/github.com/hyperledger/fabric/common/tools/cryptogen && \
+	go build && \
+	mv cryptogen /usr/bin/cryptogen && \
+	cd ${GOPATH}/src/github.com/hyperledger/fabric/common/configtx/tool/configtxgen && \
+	go build && \
+	mv configtxgen /usr/bin/configtxgen && \
+	rm -rf ${GOPATH}/src/github.com/hyperledger
+

@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: blockchain-demo
+spec:
+  containers:
+  -  name: orderer
+     image: hyperledger/fabric-orderer:x86_64-1.0.0-alpha
+     command: ["orderer"]
+     env:
+     - name: ORDERER_CFG_PATH
+       value: /etc/hyperledger/fabric/
+     - name: ORDERER_GENERAL_LEDGERTYPE
+       value: file
+     - name: ORDERER_FILELEDGER_LOCATION
+       value: /mnt/ledger/orderer1
+     - name: ORDERER_GENERAL_BATCHTIMEOUT
+       value: 1s
+     - name: ORDERER_GENERAL_BATCHSIZE_MAXMESSAGECOUNT
+       value: "10"
+     - name: ORDERER_GENERAL_MAXWINDOWSIZE
+       value: "1000"
+     - name: ORDERER_GENERAL_ORDERERTYPE
+       value: solo
+     - name: ORDERER_GENERAL_LISTENADDRESS
+       value: 0.0.0.0
+     - name: ORDERER_GENERAL_LISTENPORT
+       value: "1004"
+     - name: ORDERER_GENERAL_LOGLEVEL
+       value: debug
+     - name: ORDERER_KAFKA_BROKERS
+       value: "[kafka-0a:1003,kafka-0b:2003,kafka-0c:3003]"
+     - name: ORDERER_GENERAL_LOCALMSPDIR
+       value: /etc/hyperledger/fabric/msp/sampleconfig
+     - name: ORDERER_GENERAL_LOCALMSPID
+       value: OrdererMSP
+     - name: ORDERER_GENERAL_GENESISMETHOD
+       value: file
+     - name: ORDERER_GENERAL_GENESISFILE
+       value: /mnt/orderer/orderer.block
+     - name: ORDERER_GENERAL_GENESISPROFILE
+       value: initial
+     - name: ORDERER_GENERAL_TLS_ENABLED
+       value: "false"
+     - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+       value: /certs/orderer0a-key.pem
+     - name: ORDERER_GENERAL_TLS_CERTIFICATE
+       value: /certs/orderer0a-cert.pem
+     - name: ORDERER_GENERAL_TLS_ROOTCAS
+       value: "[/certs/cacert.pem]"
+
