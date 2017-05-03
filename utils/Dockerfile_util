@@ -9,5 +9,14 @@ RUN mkdir -p ${GOPATH}/src/github.com/hyperledger && \
 	cd ${GOPATH}/src/github.com/hyperledger/fabric/common/configtx/tool/configtxgen && \
 	go build && \
 	mv configtxgen /usr/bin/configtxgen && \
+#	mkdir /crypto && cp ${GOPATH}/src/github.com/hyperledger/fabric/examples/e2e_cli/configtx.yaml /crypto/configtx.yaml && \
 	rm -rf ${GOPATH}/src/github.com/hyperledger
 
+ADD configtx.yaml /fabric/configtx.yaml
+ADD crypto-config.yaml /fabric/crypto-config.yaml
+ADD generate_crypto.sh /usr/bin/generate_crypto.sh
+ADD generate_genesis_block.sh /usr/bin/generate_genesis_block.sh
+
+ENV FABRIC_CFG_PATH=/fabric
+
+WORKDIR /fabric
