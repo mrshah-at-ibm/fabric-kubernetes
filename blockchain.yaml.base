@@ -104,13 +104,13 @@ spec:
         - name: CORE_PEER_NETWORKID
           value: nid1
         - name: CORE_PEER_ADDRESS
-          value: 169.47.249.35:30000
+          value: %PRIVATEIP%:30000
         - name: CORE_PEER_LISTENADDRESS
           value: 0.0.0.0:5011
         - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:5010
         - name: CORE_PEER_GOSSIP_BOOTSTRAP
-          value: 169.47.249.35:30000
+          value: %PRIVATEIP%:30000
         - name: CORE_PEER_GOSSIP_ORGLEADER
           value: "true"
         - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE
@@ -174,13 +174,13 @@ spec:
         - name: CORE_PEER_NETWORKID
           value: nid1
         - name: CORE_PEER_ADDRESS
-          value: 169.47.249.35:31000
+          value: %PRIVATEIP%:31000
         - name: CORE_PEER_LISTENADDRESS
           value: 0.0.0.0:6011
         - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:6010
         - name: CORE_PEER_GOSSIP_BOOTSTRAP
-          value: 169.47.249.35:31000
+          value: %PRIVATEIP%:31000
         - name: CORE_PEER_GOSSIP_ORGLEADER
           value: "true"
         - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE

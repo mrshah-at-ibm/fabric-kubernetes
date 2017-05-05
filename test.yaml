@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: test
+    spec:
+      containers:  
+      - name: test
+        image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  labels:
+    run: test-service
+spec:
+  type: NodePort
+  selector:
+    name: test
+  ports:
+  - protocol: TCP
+    port: 80
+    nodePort: 30080
+    name: service
+
