@@ -1,15 +1,13 @@
 PRIVATEIP=$(bx cs workers blockchain | grep free | awk '{print $2}')
 
 sed "s/%PRIVATEIP%/${PRIVATEIP}/g" blockchain.yaml.base > blockchain.yaml
+sed "s/%PRIVATEIP%/${PRIVATEIP}/g" create_channel.yaml.base > create_channel.yaml
+sed "s/%PRIVATEIP%/${PRIVATEIP}/g" join_channel.yaml.base > join_channel.yaml
 
-echo "Deleting Services"
-kubectl delete svc blockchain-org1peer1-service
-kubectl delete svc blockchain-org2peer1-service
-kubectl delete svc blockchain-orderer-service
-kubectl delete svc blockchain-test-service
-
-echo "Deleting deployment"
-kubectl delete deployment blockchain
+echo "Deleting Existing pods"
+kubectl delete -f blockchain.yaml
+kubectl delete -f create_channel.yaml
+kubectl delete -f join_channel.yaml
 
 while [ "$(kubectl get pods | grep blockchain | wc -l)" != "0" ]; do
 	echo "Waiting for old pod to be deleted"
@@ -27,4 +25,4 @@ sleep 5
 #	sleep 1;
 #done
 
-kubectl logs $(kubectl get pods | grep blockchain | awk '{print $1}') -c org1peer1
+#kubectl logs $(kubectl get pods | grep blockchain | awk '{print $1}') -c org1peer1

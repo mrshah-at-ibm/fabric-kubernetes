@@ -3,20 +3,29 @@ RUN apt update && apt install -y libtool libltdl-dev
 RUN mkdir -p ${GOPATH}/src/github.com/hyperledger && \
 	cd ${GOPATH}/src/github.com/hyperledger/ && \
 	git clone https://github.com/hyperledger/fabric.git && \
+	cd ${GOPATH}/src/github.com/hyperledger/fabric && \
+	git checkout 2df18bf && \
 	cd ${GOPATH}/src/github.com/hyperledger/fabric/common/tools/cryptogen && \
 	go build && \
 	mv cryptogen /usr/bin/cryptogen && \
 	cd ${GOPATH}/src/github.com/hyperledger/fabric/common/configtx/tool/configtxgen && \
 	go build && \
 	mv configtxgen /usr/bin/configtxgen && \
+#	cd ${GOPATH}/src/github.com/hyperledger/fabric/peer && \
+#	go build && \
+#	mv peer /usr/bin/peer && \
+	cp ${GOPATH}/src/github.com/hyperledger/fabric/sampleconfig/core.yaml /core.yaml
 #	mkdir /crypto && cp ${GOPATH}/src/github.com/hyperledger/fabric/examples/e2e_cli/configtx.yaml /crypto/configtx.yaml && \
-	rm -rf ${GOPATH}/src/github.com/hyperledger
+#	rm -rf ${GOPATH}/src/github.com/hyperledger
 
 ADD utils /utils
 RUN cp /utils/*.sh /usr/bin/
+RUN mv /core.yaml /utils/core.yaml
 RUN cp /usr/bin/cryptogen /utils/cryptogen
 RUN cp /usr/bin/configtxgen /utils/configtxgen
 
+ADD ./output/executable/peer /usr/bin/peer
+#ADD ./output/peerconfig/fabric/ /utils/
 #ADD configtx.yaml /utils/configtx.yaml
 #ADD crypto-config.yaml /utils/crypto-config.yaml
 #ADD generate_crypto.sh /usr/bin/generate_crypto.sh

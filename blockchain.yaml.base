@@ -1,30 +1,66 @@
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: shared
+#  annotations:
+#    #ibmc-file-bronze: 2 IOPS per GB.
+#    #ibmc-file-silver: 4 IOPS per GB.
+#    #ibmc-file-gold: 10 IOPS per GB.
+#    volume.beta.kubernetes.io/storage-class: "ibmc-file-silver"
+#spec:
+#  accessModes:
+#    - ReadWriteMany
+#  resources:
+#    requests:
+#      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: utils
+spec:
+  restartPolicy: "Never"
+  volumes: 
+  - name: shared
+    hostPath:
+      path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+        
+  containers:
+  - name: utils
+    image: mrshahibm/utils:x86_64-1.0.0
+    imagePullPolicy: Always
+    command: ["sh", "-c", "bootstrap.sh"]
+    volumeMounts:
+    - mountPath: /shared
+      name: shared
+
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: blockchain
+  name: orderer
 spec:
   replicas: 1
-#  selector:
-#    name: blockchain
   template:
     metadata:
       labels:
-        name: blockchain
+        name: orderer
     spec:
       volumes: 
       - name: shared
         hostPath:
           path: /tmp
-        
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+                    
       containers:
-      - name: utils
-        image: mrshahibm/utils:x86_64-1.0.0
-        imagePullPolicy: Always
-        command: ["sh", "-c", "bootstrap.sh"]
-        volumeMounts:
-        - mountPath: /shared
-          name: shared
-          
       - name: orderer
         image: rameshthoomu/fabric-orderer-x86_64:x86_64-1.0.0-snapshot-2df18bf
         command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; orderer"]
@@ -73,6 +109,28 @@ spec:
         - mountPath: /shared
           name: shared
     
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ca
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: ca
+    spec:
+      volumes: 
+      - name: shared
+        hostPath:
+          path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+          
+      containers:
       - name: ca
         image: rameshthoomu/fabric-ca-x86_64:x86_64-1.0.0-snapshot-4f86663
         command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML}"]
@@ -94,7 +152,28 @@ spec:
         volumeMounts:
         - mountPath: /shared
           name: shared
-
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: org1peer1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: org1peer1
+    spec:
+      volumes: 
+      - name: shared
+        hostPath:
+          path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+          
+      containers:
       - name: org1peer1
         image: rameshthoomu/fabric-peer-x86_64:x86_64-1.0.0-snapshot-2df18bf
         command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; peer node start --peer-defaultchain=false"]
@@ -161,10 +240,35 @@ spec:
           value: "20"
         - name: PEER_CFG_PATH
           value: peer_config/
+        - name: CHANNEL_NAME
+          value: "channel1"
+        - name: ORDERER_URL
+          value: %PRIVATEIP%:32000
         volumeMounts:
         - mountPath: /shared
           name: shared
-
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: org2peer1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: org2peer1
+    spec:
+      volumes: 
+      - name: shared
+        hostPath:
+          path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+          
+      containers:
       - name: org2peer1
         image: rameshthoomu/fabric-peer-x86_64:x86_64-1.0.0-snapshot-2df18bf
         command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done;  peer node start --peer-defaultchain=false"]
@@ -231,10 +335,36 @@ spec:
           value: "20"
         - name: PEER_CFG_PATH
           value: peer_config/
+        - name: CHANNEL_NAME
+          value: "channel1"
+        - name: ORDERER_URL
+          value: %PRIVATEIP%:32000
         volumeMounts:
         - mountPath: /shared
           name: shared
 
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: test
+    spec:
+      volumes: 
+      - name: shared
+        hostPath:
+          path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+          
+      containers:
       - name: test
         image: nginx
 
@@ -309,4 +439,4 @@ spec:
   - protocol: TCP
     port: 80
     nodePort: 30080
-    name: grpc
+    name: service
