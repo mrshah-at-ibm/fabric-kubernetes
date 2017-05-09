@@ -9,29 +9,33 @@ It will bring up the following components:
 
 It also creates services to expose the components.
 
-## 1. Download and install the Bluemix cli
+## 1. Download and install kubectl cli
+
+https://kubernetes.io/docs/tasks/kubectl/install/
+
+## 2. Download and install the Bluemix cli
 
 http://clis.ng.bluemix.net/ui/home.html
 
-## 2. Add the bluemix plugins repo
+## 3. Add the bluemix plugins repo
 
 ```
 bx plugin repo-add bluemix https://plugins.ng.bluemix.net
 ```
 
-## 3. Add the container service plugin
+## 4. Add the container service plugin
 
 ```
 bx plugin install container-service -r bluemix
 ```
 
-## 4. Create a cluster on container service
+## 5. Create a cluster on container service
 
 ```
 bx cs cluster-create --name blockchain
 ```
 
-### 5. Wait for the cluster to be ready
+### 6. Wait for the cluster to be ready
 
 Command:
 ```
@@ -74,13 +78,33 @@ ID                                                 Public IP       Private IP   
 kube-dal10-pa0783c15e421749a59e2f5b7efdd351d1-w1   169.48.140.48   10.176.190.176   free           normal   Ready   
 ```
 
-### 6. Use the script to setup the blockchain network
+### 7. Configure kubectl to use the cluster
+
+Command:
+```
+#bx cs cluster-config <cluster-name>
+bx cs cluster-config blockchain
+```
+
+Expected output:
+
+```
+Downloading cluster config for blockchain
+OK
+The configuration for blockchain was downloaded successfully. Export environment variables to start using Kubernetes.
+
+export KUBECONFIG=/home/mrshah/.bluemix/plugins/container-service/clusters/blockchain/kube-config-prod-dal10-blockchain.yml
+```
+
+Use the export command above to point your kubectl cli to the cluster.
+
+### 8. Use the script to setup the blockchain network
 
 ```
 . refresh.sh
 ```
 
-### 7. Add the pods to run create and join channel commands
+### 9. Add the pods to run create and join channel commands
 
 ```
 kubectl create -f create_channel.yaml
