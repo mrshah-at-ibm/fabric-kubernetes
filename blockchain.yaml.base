@@ -183,13 +183,13 @@ spec:
         - name: CORE_PEER_NETWORKID
           value: nid1
         - name: CORE_PEER_ADDRESS
-          value: %PRIVATEIP%:30000
+          value: %PRIVATEIP%:31020
         - name: CORE_PEER_LISTENADDRESS
           value: 0.0.0.0:5011
         - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:5010
         - name: CORE_PEER_GOSSIP_BOOTSTRAP
-          value: %PRIVATEIP%:30000
+          value: %PRIVATEIP%:31020
         - name: CORE_PEER_GOSSIP_ORGLEADER
           value: "true"
         - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE
@@ -243,7 +243,7 @@ spec:
         - name: CHANNEL_NAME
           value: "channel1"
         - name: ORDERER_URL
-          value: %PRIVATEIP%:32000
+          value: %PRIVATEIP%:31010
         volumeMounts:
         - mountPath: /shared
           name: shared
@@ -278,13 +278,13 @@ spec:
         - name: CORE_PEER_NETWORKID
           value: nid1
         - name: CORE_PEER_ADDRESS
-          value: %PRIVATEIP%:31000
+          value: %PRIVATEIP%:31030
         - name: CORE_PEER_LISTENADDRESS
           value: 0.0.0.0:6011
         - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:6010
         - name: CORE_PEER_GOSSIP_BOOTSTRAP
-          value: %PRIVATEIP%:31000
+          value: %PRIVATEIP%:31030
         - name: CORE_PEER_GOSSIP_ORGLEADER
           value: "true"
         - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE
@@ -338,7 +338,7 @@ spec:
         - name: CHANNEL_NAME
           value: "channel1"
         - name: ORDERER_URL
-          value: %PRIVATEIP%:32000
+          value: %PRIVATEIP%:31010
         volumeMounts:
         - mountPath: /shared
           name: shared
@@ -372,42 +372,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: blockchain-org1peer1-service
+  name: blockchain-ca-service
   labels:
-    run: blockchain-org1peer1-service
+    run: blockchain-ca-service
 spec:
   type: NodePort
   selector:
-    name: org1peer1
+    name: ca
   ports:
   - protocol: TCP
-    port: 5011
-    nodePort: 30000
-    name: grpc
-  - protocol: TCP
-    port: 5010
-    nodePort: 30010
-    name: events
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: blockchain-org2peer1-service
-  labels:
-    run: blockchain-org2peer1-service
-spec:
-  type: NodePort
-  selector:
-    name: org2peer1
-  ports:
-  - protocol: TCP
-    port: 6011
+    port: 7054
     nodePort: 31000
     name: grpc
-  - protocol: TCP
-    port: 6010
-    nodePort: 31010
-    name: events
 ---
 apiVersion: v1
 kind: Service
@@ -422,21 +398,45 @@ spec:
   ports:
   - protocol: TCP
     port: 1004
-    nodePort: 32000
+    nodePort: 31010
     name: grpc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: blockchain-test-service
+  name: blockchain-org1peer1-service
   labels:
-    run: blockchain-test-service
+    run: blockchain-org1peer1-service
 spec:
   type: NodePort
   selector:
-    name: test
+    name: org1peer1
   ports:
   - protocol: TCP
-    port: 80
-    nodePort: 30080
-    name: service
+    port: 5010
+    nodePort: 31020
+    name: events
+  - protocol: TCP
+    port: 5011
+    nodePort: 31021
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org2peer1-service
+  labels:
+    run: blockchain-org2peer1-service
+spec:
+  type: NodePort
+  selector:
+    name: org2peer1
+  ports:
+  - protocol: TCP
+    port: 6010
+    nodePort: 31030
+    name: events
+  - protocol: TCP
+    port: 6011
+    nodePort: 31031
+    name: grpc
