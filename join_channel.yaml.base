@@ -25,7 +25,7 @@ spec:
     - name: CORE_PEER_NETWORKID
       value: nid1
     - name: CORE_PEER_ADDRESS
-      value: %PRIVATEIP%:30000
+      value: %PRIVATEIP%:31020
     - name: CORE_PEER_LOCALMSPID
       value: Org0MSP
     volumeMounts:

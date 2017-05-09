@@ -415,11 +415,11 @@ spec:
   - protocol: TCP
     port: 5010
     nodePort: 31020
-    name: events
+    name: grpc
   - protocol: TCP
     port: 5011
     nodePort: 31021
-    name: grpc
+    name: events
 ---
 apiVersion: v1
 kind: Service
@@ -435,8 +435,8 @@ spec:
   - protocol: TCP
     port: 6010
     nodePort: 31030
-    name: events
+    name: grpc
   - protocol: TCP
     port: 6011
     nodePort: 31031
-    name: grpc
+    name: events

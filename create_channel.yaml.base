@@ -23,7 +23,7 @@ spec:
     - name: CHANNEL_NAME
       value: "channel1"
     - name: ORDERER_URL
-      value: %PRIVATEIP%:32000
+      value: %PRIVATEIP%:31010
     - name: CORE_PEER_ADDRESSAUTODETECT
       value: "false"
     - name: CORE_PEER_NETWORKID
