@@ -185,9 +185,9 @@ spec:
         - name: CORE_PEER_ADDRESS
           value: %PRIVATEIP%:31020
         - name: CORE_PEER_LISTENADDRESS
-          value: 0.0.0.0:5011
-        - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:5010
+        - name: CORE_PEER_EVENTS_ADDRESS
+          value: 0.0.0.0:5011
         - name: CORE_PEER_GOSSIP_BOOTSTRAP
           value: %PRIVATEIP%:31020
         - name: CORE_PEER_GOSSIP_ORGLEADER
@@ -280,9 +280,9 @@ spec:
         - name: CORE_PEER_ADDRESS
           value: %PRIVATEIP%:31030
         - name: CORE_PEER_LISTENADDRESS
-          value: 0.0.0.0:6011
-        - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:6010
+        - name: CORE_PEER_EVENTS_ADDRESS
+          value: 0.0.0.0:6011
         - name: CORE_PEER_GOSSIP_BOOTSTRAP
           value: %PRIVATEIP%:31030
         - name: CORE_PEER_GOSSIP_ORGLEADER
