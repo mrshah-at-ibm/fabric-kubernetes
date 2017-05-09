@@ -46,6 +46,34 @@ blockchain   7fb45431d9a54d2293bae421988b0080   deploying   2017-05-09T14:55:09+
 
 Wait for the State to change from _deploying_ to _normal_. Note that this might take about 15-30 minutes. If it takes more than 30 minutes, there is some issue on the container service side - Contact them on _#armada-users_ channel on IBM slack.
 
+A ready cluster should give the following response:
+```
+$ bx cs clusters
+Listing clusters...
+OK
+Name         ID                                 State    Created                    Workers   
+blockchain   0783c15e421749a59e2f5b7efdd351d1   normal   2017-05-09T16:13:11+0000   1   
+
+```
+
+
+If you want to inspect on the status of the workers:
+Command:
+```
+# bx cs workers <cluster-name>
+# Example
+bx cs workers blockchain
+```
+
+The expected response is as follows:
+```
+$ bx cs workers blockchain
+Listing cluster workers...
+OK
+ID                                                 Public IP       Private IP       Machine Type   State    Status   
+kube-dal10-pa0783c15e421749a59e2f5b7efdd351d1-w1   169.48.140.48   10.176.190.176   free           normal   Ready   
+```
+
 ### 6. Use the script to setup the blockchain network
 
 ```
