@@ -16,4 +16,4 @@ docker run --rm -v ${BASE_FOLDER}/output/peerconfig:/opt ${PEER_DOCKER_REPOSITOR
 
 docker build -f Dockerfile_utils -t mrshahibm/utils:x86_64-1.0.0 .
 
-#docker run --rm -v ${BASE_FOLDER}:/opt mrshahibm/utils:x86_64-1.0.0 rm -rf /opt/output
+docker run --rm -v ${BASE_FOLDER}:/opt mrshahibm/utils:x86_64-1.0.0 rm -rf /opt/output
