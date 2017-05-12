@@ -1,4 +1,4 @@
-# Blockchain on IBM Container Service
+# IBM Blockchain on IBM Container Service
 
 These instructions are to run a basic IBM blockchain network on IBM's container service.
 It will bring up the following components:
@@ -8,6 +8,13 @@ It will bring up the following components:
 * Fabric-Peer (for org2)
 
 It also creates services to expose the components.
+
+## What are we trying to achieve?
+
+1. Make it easy for a developer to set up a basic hyperledger network on IBM Cloud.
+2. Keep it to basic hyperledger network. Don't make it production ready that they don't buy HSBN.
+3. _*WE DO NOT SUPPORT THIS OFFERING*_. All the support customers can get on this is from IBM Container service and IBM Blockchain will not have a part number to support this.
+4. Take point 3 seriously.
 
 ## 1. Download and install kubectl cli
 
@@ -35,7 +42,7 @@ bx plugin install container-service -r bluemix
 bx cs cluster-create --name blockchain
 ```
 
-### 6. Wait for the cluster to be ready
+### Wait for the cluster to be ready
 
 Command:
 ```
@@ -78,7 +85,7 @@ ID                                                 Public IP       Private IP   
 kube-dal10-pa0783c15e421749a59e2f5b7efdd351d1-w1   169.48.140.48   10.176.190.176   free           normal   Ready   
 ```
 
-### 7. Configure kubectl to use the cluster
+## 6. Configure kubectl to use the cluster
 
 Command:
 ```
@@ -98,13 +105,13 @@ export KUBECONFIG=/home/mrshah/.bluemix/plugins/container-service/clusters/block
 
 Use the export command above to point your kubectl cli to the cluster.
 
-### 8. Use the script to setup the blockchain network
+## 7. Use the script to setup the blockchain network
 
 ```
 . refresh.sh
 ```
 
-### 9. Add the pods to run create and join channel commands
+## 8. Add the pods to run create and join channel commands
 
 ```
 kubectl create -f create_channel.yaml
