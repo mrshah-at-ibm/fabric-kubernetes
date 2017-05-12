@@ -13,8 +13,12 @@ It also creates services to expose the components.
 
 1. Make it easy for a developer to set up a basic hyperledger network on IBM Cloud.
 2. Keep it to basic hyperledger network. Don't make it production ready that they don't buy HSBN.
-3. _*WE DO NOT SUPPORT THIS OFFERING*_. All the support customers can get on this is from IBM Container service and IBM Blockchain will not have a part number to support this.
+3. _**WE DO NOT SUPPORT THIS OFFERING**_. All the support customers can get on this is from IBM Container service and IBM Blockchain will not have a part number to support this.
 4. Take point 3 seriously.
+
+## Can this run on minikube? If yes, why CS?
+
+Yes, this can run on minikube. But, running on CS gives you a cloud hosted network. You can point your solution to HSBN once you are ready and have a HSBN.
 
 ## 1. Download and install kubectl cli
 
