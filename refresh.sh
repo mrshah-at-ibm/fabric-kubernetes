@@ -9,7 +9,7 @@ kubectl delete -f blockchain.yaml
 kubectl delete -f create_channel.yaml
 kubectl delete -f join_channel.yaml
 
-while [ "$(kubectl get pods | grep blockchain | wc -l)" != "0" ]; do
+while [ "$(kubectl get pods | wc -l)" != "0" ]; do
 	echo "Waiting for old pod to be deleted"
 	sleep 1;
 done
@@ -19,6 +19,10 @@ kubectl create -f blockchain.yaml
 
 echo "Hold on..."
 sleep 5
+
+kubectl create -f create_channel.yaml
+sleep 10
+kubectl create -f join_channel.yaml
 
 #while [ "$(kubectl get pods | grep blockchain | wc -l)" != "1" ]; do
 #	echo "Waiting for old pod to be deleted"

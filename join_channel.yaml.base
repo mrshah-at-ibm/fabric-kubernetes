@@ -27,7 +27,7 @@ spec:
     - name: CORE_PEER_ADDRESS
       value: %PRIVATEIP%:31020
     - name: CORE_PEER_LOCALMSPID
-      value: Org0MSP
+      value: Org1MSP
     volumeMounts:
     - mountPath: /shared
       name: shared

@@ -17,15 +17,15 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Org0
                     - *Org1
+                    - *Org2
     TwoOrgsChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org0
                 - *Org1
+                - *Org2
 
 ################################################################################
 #
@@ -67,13 +67,13 @@ Organizations:
                 FileKeyStore:
                     KeyStore:
 
-    - &Org0
+    - &Org1
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org0MSP
+        Name: Org1MSP
 
         # ID to load the MSP definition as
-        ID: Org0MSP
+        ID: Org1MSP
 
         MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
 
@@ -98,16 +98,16 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0
-              Port: 7051
+            - Host: PEERHOST1
+              Port: PEERPORT1
 
-    - &Org1
+    - &Org2
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org1MSP
+        Name: Org2MSP
 
         # ID to load the MSP definition as
-        ID: Org1MSP
+        ID: Org2MSP
 
         MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
 
@@ -132,8 +132,8 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer2
-              Port: 7051
+            - Host: PEERHOST2
+              Port: PEERPORT2
 
 ################################################################################
 #

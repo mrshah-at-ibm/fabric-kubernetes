@@ -34,7 +34,18 @@ spec:
   - name: utils
     image: mrshahibm/utils:x86_64-1.0.0
     imagePullPolicy: Always
-    command: ["sh", "-c", "bootstrap.sh"]
+    command: ["sh", "-c", "bootstrap.sh  && while [ 1 ]; do sleep 100; done;"]
+    env:
+    - name: PEERHOST1
+      value: %PRIVATEIP%
+    - name: PEERPORT1
+      value: "31020"
+    - name: PEERHOST2
+      value: %PRIVATEIP%
+    - name: PEERPORT2
+      value: "31030"
+    - name: ORDERER_URL
+      value: %PRIVATEIP%:31010
     volumeMounts:
     - mountPath: /shared
       name: shared
@@ -62,8 +73,8 @@ spec:
                     
       containers:
       - name: orderer
-        image: rameshthoomu/fabric-orderer-x86_64:x86_64-1.0.0-snapshot-2df18bf
-        command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; orderer"]
+        image: rameshthoomu/fabric-orderer-x86_64:x86_64-1.0.0-snapshot-9d6cec8
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; orderer"]
         env:
         - name: ORDERER_CFG_PATH
           value: /shared/
@@ -132,8 +143,8 @@ spec:
           
       containers:
       - name: ca
-        image: rameshthoomu/fabric-ca-x86_64:x86_64-1.0.0-snapshot-4f86663
-        command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML}"]
+        image: rameshthoomu/fabric-ca-x86_64:x86_64-1.0.0-snapshot-ed5ed51
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML}"]
         env:
         - name: CONFIGYAML
           value: /shared/cas/ca.yaml
@@ -175,8 +186,8 @@ spec:
           
       containers:
       - name: org1peer1
-        image: rameshthoomu/fabric-peer-x86_64:x86_64-1.0.0-snapshot-2df18bf
-        command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; peer node start --peer-defaultchain=false"]
+        image: rameshthoomu/fabric-peer-x86_64:x86_64-1.0.0-snapshot-9d6cec8
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; peer node start --peer-defaultchain=false"]
         env:
         - name: CORE_PEER_ADDRESSAUTODETECT
           value: "false"
@@ -207,11 +218,15 @@ spec:
 #        - name: CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE
 #          value: net_blockchain.com
         - name: CORE_PEER_LOCALMSPID
-          value: Org0MSP
+          value: Org1MSP
         - name: CORE_PEER_MSPCONFIGPATH
           value: /shared/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/
         - name: CORE_LOGGING_LEVEL
-          value: info
+          value: debug
+        - name: CORE_LOGGING_POLICIES
+          value: debug
+        - name: CORE_LOGGING_MSP
+          value: debug
         - name: CORE_PEER_ID
           value: org1peer1
         - name: CORE_PEER_TLS_ENABLED
@@ -240,6 +255,8 @@ spec:
           value: "20"
         - name: PEER_CFG_PATH
           value: peer_config/
+        - name: FABRIC_CFG_PATH
+          value: /shared/utils/
         - name: CHANNEL_NAME
           value: "channel1"
         - name: ORDERER_URL
@@ -270,8 +287,8 @@ spec:
           
       containers:
       - name: org2peer1
-        image: rameshthoomu/fabric-peer-x86_64:x86_64-1.0.0-snapshot-2df18bf
-        command: ["sh", "-c", "while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done;  peer node start --peer-defaultchain=false"]
+        image: rameshthoomu/fabric-peer-x86_64:x86_64-1.0.0-snapshot-9d6cec8
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done;  peer node start --peer-defaultchain=false"]
         env:
         - name: CORE_PEER_ADDRESSAUTODETECT
           value: "false"
@@ -302,11 +319,25 @@ spec:
 #        - name: CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE
 #          value: net_blockchain.com
         - name: CORE_PEER_LOCALMSPID
-          value: Org1MSP
+          value: Org2MSP
         - name: CORE_PEER_MSPCONFIGPATH
           value: /shared/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/
         - name: CORE_LOGGING_LEVEL
-          value: info
+          value: debug
+        - name: CORE_LOGGING_PEER
+          value: debug
+        - name: CORE_LOGGING_CAUTHDSL
+          value: debug
+        - name: CORE_LOGGING_GOSSIP
+          value: debug
+        - name: CORE_LOGGING_LEDGER
+          value: debug
+        - name: CORE_LOGGING_MSP
+          value: debug
+        - name: CORE_LOGGING_POLICIES
+          value: debug
+        - name: CORE_LOGGING_GRPC
+          value: debug
         - name: CORE_PEER_ID
           value: org2peer1
         - name: CORE_PEER_TLS_ENABLED
@@ -335,6 +366,8 @@ spec:
           value: "20"
         - name: PEER_CFG_PATH
           value: peer_config/
+        - name: FABRIC_CFG_PATH
+          value: /shared/utils/
         - name: CHANNEL_NAME
           value: "channel1"
         - name: ORDERER_URL

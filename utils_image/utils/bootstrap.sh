@@ -1,5 +1,6 @@
 echo "Deleting old stuff"
 rm -rf /shared/*
+rm -rf /shared/utils
 rm -rf /utils/orderer.block
 
 echo "Generating crypto material"

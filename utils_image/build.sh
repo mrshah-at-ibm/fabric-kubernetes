@@ -1,6 +1,6 @@
 #!/bin/bash
 ARCH=`uname -m | sed 's|i686|x86_64|'`
-SNAPSHOT=2df18bf
+SNAPSHOT=9d6cec8
 VERSION=1.0.0
 BASE_FOLDER=${PWD}
 
