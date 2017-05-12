@@ -20,6 +20,8 @@ It also creates services to expose the components.
 
 Yes, this can run on minikube. But, running on CS gives you a cloud hosted network. You can point your solution to HSBN once you are ready and have a HSBN.
 
+# Instructions
+
 ## 1. Download and install kubectl cli
 
 https://kubernetes.io/docs/tasks/kubectl/install/
