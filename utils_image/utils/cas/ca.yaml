@@ -75,11 +75,12 @@ ca:
   # Name of this CA
   name: CA
   # Key file (default: ca-key.pem)
-  keyfile: /shared/crypto-config/ordererOrganizations/example.com/ca/948030ba41c19d662d767eb6f0d8196ff95c87f8f838fc4b8951f886357d82e8_sk
+  keyfile: /shared/crypto-config/ordererOrganizations/example.com/ca/key.pem
   # Certificate file (default: ca-cert.pem)
   certfile: /shared/crypto-config/ordererOrganizations/example.com/ca/ca.example.com-cert.pem
   # Chain file (default: chain-cert.pem)
   #chainfile: ca-chain.pem
+  chainfile: /shared/crypto-config/ordererOrganizations/example.com/ca/ca.example.com-chain.pem
 
 #############################################################################
 #  The registry section controls how the fabric-ca-server does two things:
@@ -208,7 +209,8 @@ bccsp:
         security: 256
         filekeystore:
             # The directory used for the software file-based keystore
-            keystore: /opt/keystore
+#            keystore: /opt/keystore
+            keystore: /shared/crypto-config/ordererOrganizations/example.com/ca
 
 #############################################################################
 # The fabric-ca-server init and start commands support the following two

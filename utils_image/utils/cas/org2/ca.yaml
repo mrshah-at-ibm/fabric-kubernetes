@@ -75,11 +75,12 @@ ca:
   # Name of this CA
   name: CA2
   # Key file (default: ca-key.pem)
-  keyfile: /shared/crypto-config/peerOrganizations/org2.example.com/ca/07f52b823c9389784035c6b7a9acf2ac33e00c81dff8541320e5e51f0fc88e7f_sk
+  keyfile: /shared/crypto-config/peerOrganizations/org2.example.com/ca/key.pem
   # Certificate file (default: ca-cert.pem)
   certfile: /shared/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem
   # Chain file (default: chain-cert.pem)
   #chainfile: ca-chain.pem
+  chainfile: /shared/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-chain.pem
 
 #############################################################################
 #  The registry section controls how the fabric-ca-server does two things:
@@ -124,7 +125,7 @@ registry:
 #############################################################################
 db:
   type: sqlite3
-  datasource: /opt/fabric-ca-server.db
+  datasource: /opt/fabric-ca2-server.db
   tls:
       enabled: false
       certfiles:
@@ -208,7 +209,7 @@ bccsp:
         security: 256
         filekeystore:
             # The directory used for the software file-based keystore
-            keystore: /opt/keystore
+            keystore: /shared/crypto-config/peerOrganizations/org2.example.com/ca
 
 #############################################################################
 # The fabric-ca-server init and start commands support the following two
