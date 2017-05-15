@@ -24,6 +24,8 @@ spec:
       value: "channel1"
     - name: CORE_PEER_NETWORKID
       value: nid1
+    - name: ORDERER_URL
+      value: %PRIVATEIP%:31010
     - name: CORE_PEER_ADDRESS
       value: %PRIVATEIP%:31020
     - name: CORE_PEER_LOCALMSPID
