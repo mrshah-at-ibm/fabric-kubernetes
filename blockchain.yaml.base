@@ -223,36 +223,44 @@ spec:
           value: /shared/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/
         - name: CORE_LOGGING_LEVEL
           value: debug
-        - name: CORE_LOGGING_POLICIES
+        - name: CORE_LOGGING_PEER
+          value: debug
+        - name: CORE_LOGGING_CAUTHDSL
+          value: debug
+        - name: CORE_LOGGING_GOSSIP
+          value: debug
+        - name: CORE_LOGGING_LEDGER
           value: debug
         - name: CORE_LOGGING_MSP
+          value: info
+        - name: CORE_LOGGING_POLICIES
           value: debug
-        - name: CORE_PEER_ID
-          value: org1peer1
+        - name: CORE_LOGGING_GRPC
+          value: debug
         - name: CORE_PEER_TLS_ENABLED
           value: "false"
-        - name: CORE_PEER_TLS_CERT_FILE
-          value: /certs/peer1a-cert.pem
-        - name: CORE_PEER_TLS_KEY_FILE
-          value: /certs/peer1a-key.pem
-        - name: CORE_PEER_TLS_ROOTCERT_FILE
-          value: /certs/cacert.pem
-        - name: CORE_PEER_TLS_SERVERHOSTOVERRIDE
-          value: org1peer1
+#        - name: CORE_PEER_TLS_CERT_FILE
+#          value: /certs/peer1a-cert.pem
+#        - name: CORE_PEER_TLS_KEY_FILE
+#          value: /certs/peer1a-key.pem
+#        - name: CORE_PEER_TLS_ROOTCERT_FILE
+#          value: /certs/cacert.pem
+#        - name: CORE_PEER_TLS_SERVERHOSTOVERRIDE
+#          value: org1peer1
         - name: CORE_LEDGER_STATE_STATEDATABASE
           value: goleveldb
-        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS
-          value: localhost:5984
-        - name: COUCHDB_USER
-          value: peer1a
-        - name: COUCHDB_PASSWORD
-          value: pass1a
-        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME
-          value: peer1a
-        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
-          value: pass1a
-        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_MAXRETRIESONSTARTUP
-          value: "20"
+#        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS
+#          value: localhost:5984
+#        - name: COUCHDB_USER
+#          value: peer1a
+#        - name: COUCHDB_PASSWORD
+#          value: pass1a
+#        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME
+#          value: peer1a
+#        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+#          value: pass1a
+#        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_MAXRETRIESONSTARTUP
+#          value: "20"
         - name: PEER_CFG_PATH
           value: peer_config/
         - name: FABRIC_CFG_PATH
