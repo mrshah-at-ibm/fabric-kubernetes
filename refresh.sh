@@ -1,3 +1,4 @@
+
 PRIVATEIP=$(bx cs workers blockchain | grep free | awk '{print $2}')
 
 sed "s/%PRIVATEIP%/${PRIVATEIP}/g" blockchain.yaml.base > blockchain.yaml
@@ -23,6 +24,8 @@ sleep 5
 kubectl create -f create_channel.yaml
 sleep 10
 kubectl create -f join_channel.yaml
+
+kubectl cp utils:/shared/crypto-config ./crypto-config
 
 #while [ "$(kubectl get pods | grep blockchain | wc -l)" != "1" ]; do
 #	echo "Waiting for old pod to be deleted"
