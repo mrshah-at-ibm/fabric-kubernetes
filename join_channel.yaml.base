@@ -18,7 +18,7 @@ spec:
   - name: joinchannel
     image: mrshahibm/utils:x86_64-1.0.0
     imagePullPolicy: Always
-    command: ["sh", "-c", "/shared/utils/join_channel.sh && while [ 1 ]; do sleep 100; done;"]
+    command: ["sh", "-c", "/shared/utils/join_channel.sh || true && while [ 1 ]; do sleep 100; done;"]
     env:
     - name: CHANNEL_NAME
       value: "channel1"
@@ -30,6 +30,8 @@ spec:
       value: %PRIVATEIP%:31020
     - name: CORE_PEER_LOCALMSPID
       value: Org1MSP
+    - name: CORE_PEER_MSPCONFIGPATH
+      value: /shared/crypto-config/peerOrganizations/peerOrg1/peers/peerOrg1Peer1/
     volumeMounts:
     - mountPath: /shared
       name: shared

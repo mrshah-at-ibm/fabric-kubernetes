@@ -16,7 +16,7 @@ spec:
         
   containers:
   - name: createchannel
-    image: mrshahibm/utils:x86_64-1.0.0
+    image: mrshahibm/utils:x86_64-1.0.0-alpha
     imagePullPolicy: Always
     command: ["sh", "-c", "/shared/utils/create_channel.sh && while [ 1 ]; do sleep 100; done;"]
     env:
@@ -36,6 +36,10 @@ spec:
       value: %PRIVATEIP%
     - name: PEERPORT2
       value: "31030"
+    - name: CORE_PEER_MSPCONFIGPATH
+      value: /shared/crypto-config/peerOrganizations/peerOrg1/peers/peerOrg1Peer1/
+    - name: PEER_CFG_PATH
+      value: /shared/utils
 #        - name: CORE_PEER_ADDRESS
 #          value: %PRIVATEIP%:31000
 #        - name: CORE_PEER_LISTENADDRESS

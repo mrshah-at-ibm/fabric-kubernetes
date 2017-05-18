@@ -35,7 +35,7 @@ spec:
         
   containers:
   - name: utils
-    image: mrshahibm/utils:x86_64-1.0.0
+    image: mrshahibm/utils:x86_64-1.0.0-alpha
     imagePullPolicy: Always
     command: ["sh", "-c", "bootstrap.sh  && while [ 1 ]; do sleep 100; done;"]
     env:
@@ -49,9 +49,15 @@ spec:
       value: "31030"
     - name: ORDERER_URL
       value: %PRIVATEIP%:31010
+    - name: PEER_CFG_PATH
+      value: /utils
+    - name: DOCKER_HOST
+      value: unix:///host/var/run/docker.sock
     volumeMounts:
     - mountPath: /shared
       name: shared
+    - mountPath: /host/var/run/docker.sock
+      name: dockersocket
 
 ---
 apiVersion: extensions/v1beta1
@@ -76,11 +82,11 @@ spec:
                     
       containers:
       - name: orderer
-        image: hyperledger/fabric-orderer:x86_64-1.0.0-alpha2
-        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; orderer"]
+        image: hyperledger/fabric-orderer:x86_64-1.0.0-alpha
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; orderer || true && while [ 1 ]; do sleep 100; done;"]
         env:
         - name: ORDERER_CFG_PATH
-          value: /shared/
+          value: /shared/utils/
         - name: ORDERER_GENERAL_LEDGERTYPE
           value: file
         - name: ORDERER_FILELEDGER_LOCATION
@@ -102,7 +108,7 @@ spec:
         - name: ORDERER_KAFKA_BROKERS
           value: "[kafka-0a:1003,kafka-0b:2003,kafka-0c:3003]"
         - name: ORDERER_GENERAL_LOCALMSPDIR
-          value: /shared/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp
+          value: /shared/crypto-config/ordererOrganizations/ordererOrg1/orderers/ordererOrg1orderer1/
         - name: ORDERER_GENERAL_LOCALMSPID
           value: OrdererMSP
         - name: ORDERER_GENERAL_GENESISMETHOD
@@ -127,13 +133,13 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: ca
+  name: capeerorg1
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: ca
+        name: capeerorg1
     spec:
       volumes: 
       - name: shared
@@ -145,16 +151,16 @@ spec:
 #          claimName: shared
           
       containers:
-      - name: ca
-        image: hyperledger/fabric-ca:x86_64-1.0.0-alpha2
-        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML}"]
+      - name: capeerorg1
+        image: hyperledger/fabric-ca:x86_64-1.0.0-alpha
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML} --db.datasource /tmp/ca-peerOrg1.db"]
         env:
         - name: CONFIGYAML
-          value: /shared/cas/ca.yaml
+          value: /shared/cas/org1/ca.yaml
         - name: FABRIC_CA_SERVER_CA_CERTFILE
-          value: /shared/crypto-config/ordererOrganizations/example.com/ca/ca.example.com-cert.pem
+          value: /shared/crypto-config/peerOrganizations/peerOrg1/ca/peerOrg1-cert.pem
         - name: FABRIC_CA_SERVER_CA_KEYFILE
-          value: /mnt/crypto-config/ordererOrganizations/example.com/ca/948030ba41c19d662d767eb6f0d8196ff95c87f8f838fc4b8951f886357d82e8_sk
+          value: /shared/crypto-config/peerOrganizations/peerOrg1/ca/key.pem
         - name: FABRIC_CA_SERVER_DEBUG
           value: "true"
         - name: FABRIC_CA_SERVER_TLS_ENABLED
@@ -166,6 +172,95 @@ spec:
         volumeMounts:
         - mountPath: /shared
           name: shared
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: capeerorg2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: capeerorg2
+    spec:
+      volumes: 
+      - name: shared
+        hostPath:
+          path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+          
+      containers: 
+      - name: capeerorg2
+        image: hyperledger/fabric-ca:x86_64-1.0.0-alpha
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML}  --db.datasource /tmp/ca-peerOrg2.db"]
+        env:
+        - name: CONFIGYAML
+          value: /shared/cas/org2/ca.yaml
+        - name: FABRIC_CA_SERVER_CA_CERTFILE
+          value: /shared/crypto-config/peerOrganizations/peerOrg2/ca/peerOrg2-cert.pem
+        - name: FABRIC_CA_SERVER_CA_KEYFILE
+          value: /shared/crypto-config/peerOrganizations/peerOrg2/ca/key.pem
+        - name: FABRIC_CA_SERVER_DEBUG
+          value: "true"
+        - name: FABRIC_CA_SERVER_TLS_ENABLED
+          value: "false"
+        - name: FABRIC_CA_SERVER_TLS_CERTFILE
+          value: /certs/ca0a-cert.pem
+        - name: FABRIC_CA_SERVER_TLS_KEYFILE
+          value: /certs/ca0a-key.pem
+        volumeMounts:
+        - mountPath: /shared
+          name: shared
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: caorderer
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: caorderer
+    spec:
+      volumes: 
+      - name: shared
+        hostPath:
+          path: /tmp
+#      volumes: 
+#      - name: shared
+#        persistentVolumeClaim:
+#          claimName: shared
+          
+      containers:
+      - name: caorderer
+        image: hyperledger/fabric-ca:x86_64-1.0.0-alpha
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; fabric-ca-server start -c ${CONFIGYAML}  --db.datasource /tmp/ca-ordererOrg.db"]
+        env:
+        - name: CONFIGYAML
+          value: /shared/cas/ca.yaml
+        - name: FABRIC_CA_SERVER_CA_CERTFILE
+          value: /shared/crypto-config/ordererOrganizations/ordererOrg1/ca/ordererOrg1-cert.pem
+        - name: FABRIC_CA_SERVER_CA_KEYFILE
+          value: /shared/crypto-config/ordererOrganizations/ordererOrg1/ca/key.pem
+        - name: FABRIC_CA_SERVER_DEBUG
+          value: "true"
+        - name: FABRIC_CA_SERVER_TLS_ENABLED
+          value: "false"
+        - name: FABRIC_CA_SERVER_TLS_CERTFILE
+          value: /certs/ca0a-cert.pem
+        - name: FABRIC_CA_SERVER_TLS_KEYFILE
+          value: /certs/ca0a-key.pem
+        volumeMounts:
+        - mountPath: /shared
+          name: shared
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -192,8 +287,8 @@ spec:
           
       containers:
       - name: org1peer1
-        image: hyperledger/fabric-peer:x86_64-1.0.0-alpha2
-        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; peer node start --peer-defaultchain=false"]
+        image: hyperledger/fabric-peer:x86_64-1.0.0-alpha
+        command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done; peer node start --peer-defaultchain=false || true &&  while [ 1 ]; do sleep 100; done;"]
         env:
         - name: CORE_PEER_ADDRESSAUTODETECT
           value: "false"
@@ -226,7 +321,7 @@ spec:
         - name: CORE_PEER_LOCALMSPID
           value: Org1MSP
         - name: CORE_PEER_MSPCONFIGPATH
-          value: /shared/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/
+          value: /shared/crypto-config/peerOrganizations/peerOrg1/peers/peerOrg1Peer1/
         - name: CORE_LOGGING_LEVEL
           value: debug
         - name: CORE_LOGGING_PEER
@@ -268,7 +363,7 @@ spec:
 #        - name: CORE_LEDGER_STATE_COUCHDBCONFIG_MAXRETRIESONSTARTUP
 #          value: "20"
         - name: PEER_CFG_PATH
-          value: peer_config/
+          value: /shared/utils/
         - name: FABRIC_CFG_PATH
           value: /shared/utils/
         - name: CHANNEL_NAME
@@ -306,7 +401,7 @@ spec:
           
       containers:
       - name: org2peer1
-        image: hyperledger/fabric-peer:x86_64-1.0.0-alpha2
+        image: hyperledger/fabric-peer:x86_64-1.0.0-alpha
         command: ["sh", "-c", "sleep 1 && while [ ! -f /shared/bootstrapped ]; do echo Waiting for bootstrap; sleep 1; done;  peer node start --peer-defaultchain=false"]
         env:
         - name: CORE_PEER_ADDRESSAUTODETECT
@@ -340,7 +435,7 @@ spec:
         - name: CORE_PEER_LOCALMSPID
           value: Org2MSP
         - name: CORE_PEER_MSPCONFIGPATH
-          value: /shared/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/
+          value: /shared/crypto-config/peerOrganizations/peerOrg1/peers/peerOrg1Peer1/
         - name: CORE_LOGGING_LEVEL
           value: debug
         - name: CORE_LOGGING_PEER
@@ -384,7 +479,7 @@ spec:
         - name: CORE_LEDGER_STATE_COUCHDBCONFIG_MAXRETRIESONSTARTUP
           value: "20"
         - name: PEER_CFG_PATH
-          value: peer_config/
+          value: /shared/utils/
         - name: FABRIC_CFG_PATH
           value: /shared/utils/
         - name: CHANNEL_NAME
@@ -426,17 +521,49 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: blockchain-ca-service
+  name: blockchain-caorderer-service
   labels:
-    run: blockchain-ca-service
+    run: blockchain-caorderer-service
 spec:
   type: NodePort
   selector:
-    name: ca
+    name: caorderer
   ports:
   - protocol: TCP
     port: 7054
     nodePort: 31000
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-capeerorg1-service
+  labels:
+    run: blockchain-capeerorg1-service
+spec:
+  type: NodePort
+  selector:
+    name: capeerorg1
+  ports:
+  - protocol: TCP
+    port: 7054
+    nodePort: 31001
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-capeerorg2-service
+  labels:
+    run: blockchain-capeerorg2-service
+spec:
+  type: NodePort
+  selector:
+    name: capeerorg2
+  ports:
+  - protocol: TCP
+    port: 7054
+    nodePort: 31002
     name: grpc
 ---
 apiVersion: v1

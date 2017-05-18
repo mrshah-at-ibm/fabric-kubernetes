@@ -1,5 +1,5 @@
 
-PRIVATEIP=$(bx cs workers blockchain | grep free | awk '{print $2}')
+PRIVATEIP=$(bx cs workers --cluster blockchain | grep free | awk '{print $2}')
 
 sed "s/%PRIVATEIP%/${PRIVATEIP}/g" blockchain.yaml.base > blockchain.yaml
 sed "s/%PRIVATEIP%/${PRIVATEIP}/g" create_channel.yaml.base > create_channel.yaml
@@ -20,6 +20,11 @@ kubectl create -f blockchain.yaml
 
 echo "Hold on..."
 sleep 5
+
+while [ "$(kubectl get pods | grep Creat | wc -l)" != "0" ]; do
+	echo "Waiting for new containers to be created"
+	sleep 1;
+done
 
 kubectl create -f create_channel.yaml
 sleep 10
