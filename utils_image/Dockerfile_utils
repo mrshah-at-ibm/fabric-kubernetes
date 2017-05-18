@@ -4,7 +4,7 @@ RUN mkdir -p ${GOPATH}/src/github.com/hyperledger && \
 	cd ${GOPATH}/src/github.com/hyperledger/ && \
 	git clone https://github.com/hyperledger/fabric.git && \
 	cd ${GOPATH}/src/github.com/hyperledger/fabric && \
-	git checkout 9d6cec8 && \
+	git checkout tags/v1.0.0-alpha  && \
 	cd ${GOPATH}/src/github.com/hyperledger/fabric/common/tools/cryptogen && \
 	go build && \
 	mv cryptogen /usr/bin/cryptogen && \
@@ -14,9 +14,15 @@ RUN mkdir -p ${GOPATH}/src/github.com/hyperledger && \
 #	cd ${GOPATH}/src/github.com/hyperledger/fabric/peer && \
 #	go build && \
 #	mv peer /usr/bin/peer && \
-	cp ${GOPATH}/src/github.com/hyperledger/fabric/sampleconfig/core.yaml /core.yaml
+	cp ${GOPATH}/src/github.com/hyperledger/fabric/peer/core.yaml /core.yaml && \
+#	mv ${GOPATH}/src/github.com/hyperledger /hyperledger
 #	mkdir /crypto && cp ${GOPATH}/src/github.com/hyperledger/fabric/examples/e2e_cli/configtx.yaml /crypto/configtx.yaml && \
-#	rm -rf ${GOPATH}/src/github.com/hyperledger
+	rm -rf ${GOPATH}/src/github.com/hyperledger
+
+# Install docker CLI
+RUN wget https://get.docker.com/builds/Linux/x86_64/docker-17.05.0-ce.tgz
+RUN tar -xvf docker-17.05.0-ce.tgz
+RUN cp docker/docker /usr/sbin/docker
 
 ADD utils /utils
 RUN cp /utils/*.sh /usr/bin/
