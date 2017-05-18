@@ -1,5 +1,6 @@
 echo "Generating Crypto Material"
-cryptogen generate --config=crypto-config.yaml
+cryptogen -peerOrgs 2 -peersPerOrg 1 -ordererNodes 1 -baseDir /utils/
+
 cp -r crypto-config /shared/
 
 # Delete admin certs so anyone on the org can perform transaction
