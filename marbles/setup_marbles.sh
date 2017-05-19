@@ -9,7 +9,13 @@ echo "Cloning marbles repository"
 git clone https://github.com/IBM-Blockchain/marbles
 
 echo "Getting IP address of the worker on the cluster"
-export PRIVATEIP=$(bx cs workers --cluster blockchain | grep free | awk '{print $2}')
+if [ "$(bx plugin list | grep container-service | awk '{print $2}')" == "0.1.256" ]; then
+	export PRIVATEIP=$(bx cs workers --cluster blockchain | grep free | awk '{print $2}')
+else
+	export PRIVATEIP=$(bx cs workers blockchain | grep free | awk '{print $2}')
+fi
+
+echo "IP = ${PRIVATEIP}"
 
 echo "Setting up Blockchain Credentials file"
 export PORT_CA_ORDERER=31000
