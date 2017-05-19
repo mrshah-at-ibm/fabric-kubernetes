@@ -1,8 +1,17 @@
+#!/bin/bash
+
+echo "Deleting existing marbles folder"
 rm -rf marbles/
+echo "Deleting existing network credentials"
+rm -rf /tmp/hfc* ~/.hfc-key-store
+
+echo "Cloning marbles repository"
 git clone https://github.com/IBM-Blockchain/marbles
 
+echo "Getting IP address of the worker on the cluster"
 export PRIVATEIP=$(bx cs workers --cluster blockchain | grep free | awk '{print $2}')
 
+echo "Setting up Blockchain Credentials file"
 export PORT_CA_ORDERER=31000
 export PORT_CA_PEERORG1=31001
 export PORT_CA_PEERORG2=31002
@@ -21,6 +30,7 @@ sed -i "s|7051|${PORT_ORG1PEER1_DISCOVERY}|g" marbles/config/blockchain_creds1.j
 sed -i "s|7053|${PORT_ORG1PEER1_EVENTS}|g" marbles/config/blockchain_creds1.json
 sed -i "s|mychannel|${CHANNEL}|g" marbles/config/blockchain_creds1.json
 
+echo "Installing dependencies (NPM)"
 cd marbles/
 npm install --unsafe-perm
 npm install -g --unsafe-perm gulp
