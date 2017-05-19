@@ -2,9 +2,9 @@
 
 ## Prereqs
 
-1. You have setup the blockchain network on the IBM Container service as mentioned [here](../.)
-2. You have created channel on the network as mentioned [here](../.)
-3. The peer you are using here has joined the channel as mentioned [here](../.)
+1. You have setup the blockchain network on the IBM Container service as mentioned [here](../README.md)
+2. You have created channel on the network as mentioned [here](../README.md)
+3. The peer you are using here has joined the channel as mentioned [here](../README.md)
 
 ## Run Marbles Local
 
