@@ -172,7 +172,7 @@ kubectl logs joinchannel
 
 ## Run Marbles
 
-For instructions to run marbles, look here[./marbles/README.md]
+For instructions to run marbles, look [here](./marbles/README.md)
 
 
 # Helpful commands:
