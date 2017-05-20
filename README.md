@@ -60,8 +60,8 @@ bx cs clusters
 
 The response will be similar to the following:
 ```
-Name         ID                                 State       Created                    Workers   
-blockchain   7fb45431d9a54d2293bae421988b0080   deploying   2017-05-09T14:55:09+0000   0   
+Name         ID                                 State       Created                    Workers
+blockchain   7fb45431d9a54d2293bae421988b0080   deploying   2017-05-09T14:55:09+0000   0
 ```
 
 Wait for the State to change from _deploying_ to _normal_. Note that this might take about 15-30 minutes. If it takes more than 30 minutes, there is some issue on the container service side - Contact them on _#armada-users_ channel on IBM slack.
@@ -71,8 +71,8 @@ A ready cluster should give the following response:
 $ bx cs clusters
 Listing clusters...
 OK
-Name         ID                                 State    Created                    Workers   
-blockchain   0783c15e421749a59e2f5b7efdd351d1   normal   2017-05-09T16:13:11+0000   1   
+Name         ID                                 State    Created                    Workers
+blockchain   0783c15e421749a59e2f5b7efdd351d1   normal   2017-05-09T16:13:11+0000   1
 
 ```
 
@@ -90,8 +90,8 @@ The expected response is as follows:
 $ bx cs workers blockchain
 Listing cluster workers...
 OK
-ID                                                 Public IP       Private IP       Machine Type   State    Status   
-kube-dal10-pa0783c15e421749a59e2f5b7efdd351d1-w1   169.48.140.48   10.176.190.176   free           normal   Ready   
+ID                                                 Public IP       Private IP       Machine Type   State    Status
+kube-dal10-pa0783c15e421749a59e2f5b7efdd351d1-w1   169.48.140.48   10.176.190.176   free           normal   Ready
 ```
 
 ### 6. Configure kubectl to use the cluster
@@ -170,10 +170,95 @@ At the end of this step, you should see the log `Peer joined the channel!` when 
 kubectl logs joinchannel
 ```
 
+### 6. Start Hyperledger Composer Playground for developing Blockchain business networks
+Hyperledger Composer is a framework for developing Blockchain business networks. Find more information here:
+[https://hyperledger.github.io/composer/](https://hyperledger.github.io/composer/)
+
+This command will start an instance of the Hyperledger Composer Playground for developing Blockchain business networks:
+```
+./composer-playground.sh
+```
+Next, determine the public IP address of the cluster by running the following command:
+```
+bx cs workers blockchain
+```
+The output should be similiar to the following:
+```
+Listing cluster workers...
+OK
+ID                                                 Public IP      Private IP       Machine Type   State    Status
+kube-dal10-pabdda14edc4394b57bb08d53c149930d7-w1   169.48.140.99   10.171.239.186   free           normal   Ready
+```
+Using the value of the `Public IP` (in this example 169.48.140.99) you can now access the Hyperledger Composer Playground:
+`http://YOUR_PUBLIC_IP_HERE:31080`
+
 ## Run Marbles
 
 For instructions to run marbles, look [here](./marbles/README.md)
 
+## Create a Hyperledger Composer connection profile
+
+You can create a Hyperledger Composer connection profile for use with locally installed Composer tools - for example, the `composer` CLI tool for deploying business network archives.
+
+First, determine the public IP address of the cluster by running the following command:
+```
+bx cs workers blockchain
+```
+The output should be similiar to the following:
+```
+Listing cluster workers...
+OK
+ID                                                 Public IP      Private IP       Machine Type   State    Status
+kube-dal10-pabdda14edc4394b57bb08d53c149930d7-w1   169.48.140.99   10.171.239.186   free           normal   Ready
+```
+You then need to make the following changes to this example JSON connection profile document:
+1. Replace all instances of YOUR_PUBLIC_IP_HERE with the value of the `Public IP` (in this example 169.48.140.99).
+2. Change YOUR_HOME_DIRECTORY_HERE to a directory on your machine that already exists, for example `/home/sstone1`.
+```
+{
+    "type": "hlfv1",
+    "orderers": [
+        "grpc://YOUR_PUBLIC_IP_HERE:31010"
+    ],
+    "ca": "http://YOUR_PUBLIC_IP_HERE:31001",
+    "peers": [
+        {
+            "requestURL": "grpc://YOUR_PUBLIC_IP_HERE:31020",
+            "eventURL": "grpc://YOUR_PUBLIC_IP_HERE:31021"
+        }
+    ],
+    "keyValStore": "YOUR_HOME_DIRECTORY_HERE/.hfc-key-store",
+    "channel": "channel1",
+    "mspID": "Org1MSP",
+    "deployWaitTime": "300",
+    "invokeWaitTime": "100"
+}
+```
+
+## Start a Hyperledger Composer REST server
+
+You can also deploy a Hyperledger Composer REST server after you have deployed a business network definition.
+
+First, edit the file `kube_configs/composer-rest-server.yaml.base` to reflect the business network that you have deployed. You **only** need to do this step if you have deployed a business network using the `composer` CLI. You will need to change the values of the environment variable `COMPOSER_BUSINESS_NETWORK` to reflect the name of the deployed business network. Note that when deploying using Hyperledger Composer Playground, the deployed business network is always named `org.acme.biznet`.
+
+Next, run the following commands:
+```
+./composer-rest-server.sh
+```
+
+Next, determine the public IP address of the cluster by running the following command:
+```
+bx cs workers blockchain
+```
+The output should be similiar to the following:
+```
+Listing cluster workers...
+OK
+ID                                                 Public IP      Private IP       Machine Type   State    Status
+kube-dal10-pabdda14edc4394b57bb08d53c149930d7-w1   169.48.140.99   10.171.239.186   free           normal   Ready
+```
+Using the value of the `Public IP` (in this example 169.48.140.99) you can now access the Hyperledger Composer REST server:
+`http://YOUR_PUBLIC_IP_HERE:31090/explorer/`
 
 # Helpful commands:
 ```

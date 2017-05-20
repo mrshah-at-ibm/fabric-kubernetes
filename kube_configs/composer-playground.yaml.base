@@ -1,0 +1,61 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: composer-playground
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: composer-playground
+    spec:
+      containers:
+      - name: composer-playground
+        image: hyperledger/composer-playground
+        env:
+        - name: COMPOSER_CONFIG
+          value: >
+            {
+              "connectionProfiles": {
+                "hlfabric": {
+                  "type": "hlfv1",
+                  "orderers": [
+                      "grpc://blockchain-orderer-service:1004"
+                  ],
+                  "ca": "http://blockchain-capeerorg1-service:7054",
+                  "peers": [
+                      {
+                          "requestURL": "grpc://blockchain-org1peer1-service:5010",
+                          "eventURL": "grpc://blockchain-org1peer1-service:5011"
+                      }
+                  ],
+                  "keyValStore": "/home/composer/.hfc-key-store",
+                  "channel": "channel1",
+                  "mspID": "Org1MSP",
+                  "deployWaitTime": "300",
+                  "invokeWaitTime": "100"
+                }
+              },
+              "credentials": {
+                "hlfabric": {
+                  "admin": "adminpw"
+                }
+              }
+            }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: composer-playground-service
+  labels:
+    run: composer-playground-service
+spec:
+  type: NodePort
+  selector:
+    name: composer-playground
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 31080
+    name: http

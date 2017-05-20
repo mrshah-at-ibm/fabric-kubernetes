@@ -13,7 +13,7 @@ sed "s/%PRIVATEIP%/${PRIVATEIP}/g" ../kube_configs/join_channel.yaml.base > ../k
 echo "Deleting Existing pods"
 kubectl delete -f ../kube_configs/join_channel.yaml
 
-while [ "$(kubectl get pods | grep joinchannel | wc -l)" != "0" ]; do
+while [ "$(kubectl get pods | grep joinchannel | wc -l | awk '{print $1}')" != "0" ]; do
 	echo "Waiting for old pod to be deleted"
 	sleep 1;
 done

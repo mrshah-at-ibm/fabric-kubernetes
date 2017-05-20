@@ -1,0 +1,66 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: composer-rest-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: composer-rest-server
+    spec:
+      containers:
+      - name: composer-rest-server
+        image: hyperledger/composer-rest-server
+        env:
+        - name: COMPOSER_CONFIG
+          value: >
+            {
+              "connectionProfiles": {
+                "hlfabric": {
+                  "type": "hlfv1",
+                  "orderers": [
+                      "grpc://blockchain-orderer-service:1004"
+                  ],
+                  "ca": "http://blockchain-capeerorg1-service:7054",
+                  "peers": [
+                      {
+                          "requestURL": "grpc://blockchain-org1peer1-service:5010",
+                          "eventURL": "grpc://blockchain-org1peer1-service:5011"
+                      }
+                  ],
+                  "keyValStore": "/home/composer/.hfc-key-store",
+                  "channel": "channel1",
+                  "mspID": "Org1MSP",
+                  "deployWaitTime": "300",
+                  "invokeWaitTime": "100"
+                }
+              }
+            }
+        - name: COMPOSER_CONNECTION_PROFILE
+          value: hlfabric
+        - name: COMPOSER_BUSINESS_NETWORK
+          value: org.acme.biznet
+        - name: COMPOSER_ENROLLMENT_ID
+          value: admin
+        - name: COMPOSER_ENROLLMENT_SECRET
+          value: adminpw
+        - name: COMPOSER_NAMESPACES
+          value: never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: composer-rest-server-service
+  labels:
+    run: composer-rest-server-service
+spec:
+  type: NodePort
+  selector:
+    name: composer-rest-server
+  ports:
+  - protocol: TCP
+    port: 3000
+    nodePort: 31090
+    name: http
