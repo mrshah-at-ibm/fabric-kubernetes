@@ -6,16 +6,16 @@ It will bring up the following components:
 * Orderer (SOLO)
 * Fabric-Peer (for org1)
 * Fabric-Peer (for org2)
+* Fabric Composer
 * Marbles
 
 It also creates services to expose the components.
 
 ## What are we trying to achieve?
 
-1. Make it easy for a developer to set up a basic hyperledger network on IBM Cloud.
-2. Keep it to basic hyperledger network. Don't make it production ready that they don't buy HSBN.
-3. _**WE DO NOT SUPPORT THIS OFFERING**_. All the support customers can get on this is from IBM Container service and IBM Blockchain will not have a part number to support this.
-4. Take point 3 seriously.
+1. Make it easy for a developer to set up a basic hyperledger fabric network on IBM Cloud.
+2. Keep it to basic hyperledger fabric network.
+3. _**WE DO NOT SUPPORT THIS OFFERING**_. Support is only provided through the IBM Container Service; IBM Blockchain does not have a support offering for this. 
 
 ## Can this run on minikube? If yes, why CS?
 
