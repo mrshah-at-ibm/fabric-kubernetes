@@ -51,6 +51,14 @@ bx plugin install container-service -r bluemix
 bx cs cluster-create --name blockchain
 ```
 
+You will have to login to Bluemix for the above to work:
+```
+# Point to Bluemix
+bx api api.ng.bluemix.net
+# Login to Bluemix
+bx login
+```
+
 #### Wait for the cluster to be ready
 
 Command:
